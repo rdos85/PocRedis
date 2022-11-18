@@ -86,4 +86,4 @@ public class CacheTestController : ControllerBase
 }
 ```
 
-4- Para visualizar os dados que estão sendo gravados no cache, pode ser usado o (Another Redis Desktop Manager)[https://github.com/qishibo/AnotherRedisDesktopManager].
+4- Para visualizar os dados que estão sendo gravados no cache, pode ser usado o [Another Redis Desktop Manager](https://github.com/qishibo/AnotherRedisDesktopManager).
