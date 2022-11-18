@@ -11,7 +11,7 @@ docker run -p 6379:6379 --name redis -d redis
 
 # Configuração do appsettings.json
 Adicionar à lista de ConnectionStrings:
-```json
+```jsonc
 "ConnectionStrings": {
     "Redis": "localhost:6379,ssl=false,abortConnect=false",
 
@@ -22,7 +22,7 @@ Adicionar à lista de ConnectionStrings:
 
 # Configuração da aplicação
 
-1- Adicionar a lib
+1- Adicionar a lib abaixo ao projeto:
 ```
 Microsoft.Extensions.Caching.StackExchangeRedis
 ```
