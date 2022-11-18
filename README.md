@@ -4,14 +4,14 @@ POC usando dotnet e Redis como cache.
 # Criação de ambiente
 Criar um Redis localmente com docker: 
 
-```
+```bash
 docker run -p 6379:6379 --name redis -d redis
 ```
 
 
 # Configuração do appsettings.json
 Adicionar à lista de ConnectionStrings:
-```
+```json
 "ConnectionStrings": {
     "Redis": "localhost:6379,ssl=false,abortConnect=false",
 
@@ -22,7 +22,10 @@ Adicionar à lista de ConnectionStrings:
 
 # Configuração da aplicação
 
-1- Adicionar a lib Microsoft.Extensions.Caching.StackExchangeRedis.
+1- Adicionar a lib
+```
+Microsoft.Extensions.Caching.StackExchangeRedis
+```
 
 2- Configurar o container de injeção de dependência para usar o Redis como provedor de IDistributedCache.
 ```csharp
@@ -44,3 +47,41 @@ else
 ```
 
 3- Feito isso, basta usar a interface IDistributedCache nos serviços. 
+```csharp
+public class CacheTestController : ControllerBase
+{
+
+    private readonly ILogger<CacheTestController> _logger;
+    private readonly IDistributedCache _distributedCache;
+
+    private const string cacheKey = "key-teste";
+
+    public CacheTestController(ILogger<CacheTestController> logger, IDistributedCache distributedCache)
+    {
+        _logger = logger;
+        _distributedCache = distributedCache;
+    }
+
+    [HttpGet, Route("ler")]
+    public async Task<ActionResult> GetAsync()
+    {
+        var cacheValue = await _distributedCache.GetStringAsync(cacheKey);
+
+        if (cacheValue == null)
+            return NotFound($"Não foi encontrado valor no cache. Key: [{cacheKey}]");
+
+        return Ok(cacheValue);
+    }
+
+    [HttpPost, Route("gravar")]
+    public async Task<ActionResult> AddAsync(string valor, int duracaoSegundos)
+    {
+        await _distributedCache.SetStringAsync(cacheKey, valor, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(duracaoSegundos)
+        });
+
+        return Ok($"Valor gravado no cache. Key: [{cacheKey}]");
+    }
+}
+```
