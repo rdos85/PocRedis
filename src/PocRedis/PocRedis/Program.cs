@@ -2,9 +2,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var redisConnection = builder.Configuration.GetConnectionString("Redis");
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 
-if (redisConnection == null)
+if (redisConnectionString == null)
 {
     // Se não houver connectionString de Redis, usa cache em memória.
     builder.Services.AddDistributedMemoryCache();
@@ -13,8 +13,10 @@ else
 {
     builder.Services.AddStackExchangeRedisCache(s =>
     {
-        s.Configuration = redisConnection;
-        s.InstanceName = "poc-redis"; // Isso é um prefixo que será adicionado às keys (tanto Get quanto Set).
+        s.Configuration = redisConnectionString;
+        
+        // Isso é um prefixo que será adicionado às keys (tanto Get quanto Set).
+        s.InstanceName = "poc-redis-"; 
     });
 }
 
