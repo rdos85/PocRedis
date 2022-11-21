@@ -43,7 +43,7 @@ else
         s.Configuration = redisConnectionString;
         
         // Isso é um prefixo que será adicionado às keys (tanto Get quanto Set).
-        s.InstanceName = "poc-redis-"; 
+        s.InstanceName = "poc-redis:"; 
     });
 }
 ```
